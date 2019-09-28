@@ -1,5 +1,6 @@
 # cowsaybot
-A discord bot that puts messages in a cowsay
+A discord bot that puts messages in a cowsay  
+invite link: https://discordapp.com/api/oauth2/authorize?client_id=627468031110414355&permissions=68608&scope=bot
 
 #### Requirements:
 - discord.py
