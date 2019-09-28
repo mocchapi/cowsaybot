@@ -5,8 +5,8 @@ import time
 import subprocess
 import random
 
-bot_token = configparser.ConfigParser()
-bot_token.read('bot.secret')
+bot_config = configparser.ConfigParser()
+bot_config.read('bot.secret')
 
 client = discord.Client()
 
@@ -41,20 +41,29 @@ def remove_prefix(text):
 
 @client.event
 async def on_ready():
-	log_this(True,"Cow time :)")
+	print('total guilds:'+str(len(client.guilds)))
+	for index,val in enumerate(client.guilds):
+		print('['+str(index)+']'+val.name+"\nID:"+str(val.id)+"\n")
 
 
 @client.event
 async def on_message(message):
-	if message.author == client.user:
+	if message.author == client.user or message.author.bot:
 		return
 
 	if message.content.startswith('cow ') or random.randint(1,501) == 1:
-		
+		blacklist = str(bot_config.get('Options','blacklist'))
+		if str(message.guild.id) in blacklist:
+			print("guild "+message.guild.name+" in blacklist, ignoring.")
+			#await guild.leave()
+			return
+
+		if "\n" in remove_prefix(message.content):
+			message.content = message.content.replace('\n','') 
+		log_this(True,"from: "+message.author.name+"#"+message.author.discriminator+" with message: "+str(message.content))
 
 		test = subprocess.Popen(['cowsay',remove_prefix(message.content)], stdout=subprocess.PIPE)
 		cowsay_output = test.communicate()[0]
-		#cowsay_output = cow.cowsay(remove_prefix(message.content))
 		cowsay_output = str(cowsay_output).replace("\\n",'\n').replace("\\\\","\\")[2:-1]
 		if len(cowsay_output) <1992:
 			print(cowsay_output)
@@ -68,6 +77,6 @@ async def on_message(message):
 
 
 try:
-	client.run(bot_token.get('Tokens','bot'))
+	client.run(bot_config.get('Tokens','bot'))
 except BaseException as e:
-	log_this(False,e)
+	report_this(False,e)
