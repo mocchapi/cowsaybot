@@ -58,8 +58,8 @@ async def on_message(message):
 			#await guild.leave()
 			return
 
-		if "\n" in remove_prefix(message.content):
-			message.content = message.content.replace('\n','') 
+		if "\\n" in remove_prefix(message.content):
+			message.content = message.content.replace('\\n','')
 		log_this(True,"from: "+message.author.name+"#"+message.author.discriminator+" with message: "+str(message.content))
 
 		test = subprocess.Popen(['cowsay',remove_prefix(message.content)], stdout=subprocess.PIPE)
