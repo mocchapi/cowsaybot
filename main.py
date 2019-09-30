@@ -54,17 +54,18 @@ async def on_message(message):
 	if message.content.startswith('cow ') or random.randint(1,501) == 1:
 		blacklist = str(bot_config.get('Options','blacklist'))
 		if str(message.guild.id) in blacklist:
-			print("guild "+message.guild.name+" in blacklist, ignoring.")
-			#await guild.leave()
+			print("guild "+message.guild.name+" in blacklist, leaving guild.")
+			await message.guild.leave()
 			return
 
 		if "\\n" in remove_prefix(message.content):
+			print("filtered")
 			message.content = message.content.replace('\\n','')
 		log_this(True,"from: "+message.author.name+"#"+message.author.discriminator+" with message: "+str(message.content))
 
 		test = subprocess.Popen(['cowsay',remove_prefix(message.content)], stdout=subprocess.PIPE)
 		cowsay_output = test.communicate()[0]
-		cowsay_output = str(cowsay_output).replace("\\n",'\n').replace("\\\\","\\")[2:-1]
+		cowsay_output = str(cowsay_output).replace("\\n",'\n').replace("\\\\","\\").replace("```","")[2:-1]
 		if len(cowsay_output) <1992:
 			print(cowsay_output)
 			await message.channel.send("```"+cowsay_output+"```")
