@@ -4,6 +4,9 @@ import csv
 import time
 import subprocess
 import random
+import updater
+
+updater.update()
 
 bot_config = configparser.ConfigParser()
 bot_config.read('bot.secret')
