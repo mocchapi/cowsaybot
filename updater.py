@@ -4,7 +4,7 @@ import configparser
 import sys
 
 
-def update():
+def update(manualupdate):
 	try:
 		config = configparser.ConfigParser()
 		config.read('updater.config')
@@ -37,7 +37,7 @@ def update():
 
 		if LocalCode != GitCode:
 				print("Local - Github mismatch!")
-				if autoupdate == "True":
+				if autoupdate == "True" or manualupdate:
 					print('autoupdate enabled')
 					print("updating...")
 					localNew = open(localfile,'w')
@@ -55,3 +55,7 @@ def update():
 			print("what the fuck")
 	except BaseException as e:
 		print(e)
+
+if __name__ == "__main__":
+	print('starting manual update')
+	update(True)
