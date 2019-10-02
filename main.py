@@ -4,14 +4,18 @@ import csv
 import time
 import subprocess
 import random
+import sys
 from updater import update
 
 update()
 
-bot_config = configparser.ConfigParser()
-bot_config.read('bot.secret')
-blacklist = str(bot_config.get('Options','blacklist'))
-
+try:
+	bot_config = configparser.ConfigParser()
+	bot_config.read('bot.secret')
+	blacklist = str(bot_config.get('Options','blacklist'))
+except BaseException as e:
+	print(e)
+	sys.exit()
 
 client = discord.Client()
 
@@ -91,12 +95,12 @@ async def on_message(message):
 	if message.content.startswith('cow ') or random.randint(1,501) == 1:
 		log_this(True,"from: "+message.author.name+"#"+message.author.discriminator+" with message: "+str(message.content))
 		inputstr =remove_prefix(str(message.content))
+		try:
+			await message.delete()
+		except BaseException as e:
+			print(e)
 		await message.channel.send(command_cow(inputstr))
 		log_this(True,"said: "+command_cow(inputstr))
-
-
-
-
 
 
 try:
