@@ -41,7 +41,7 @@ def update():
 					print('autoupdate enabled')
 					print("updating...")
 					localNew = open(localfile,'w')
-					#LocalNew.write(GitCode)
+					localNew.write(GitCode)
 					sys.exit()
 				elif autoupdate == "False":
 					print('autoupdate disabled')
