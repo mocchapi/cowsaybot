@@ -16,9 +16,9 @@ def update():
 		print("generating config file...")
 		CreateConfig = open('updater.config','w')
 		CreateConfig.write('[Updater]\n')
-		CreateConfig.write('githubraw = \n')
-		CreateConfig.write('localfile = \n')
-		CreateConfig.write('autoupdate = \n')
+		CreateConfig.write('githubraw = https://raw.githubusercontent.com/mocchapi/cowsaybot/master/main.py\n')
+		CreateConfig.write('localfile = main.py\n')
+		CreateConfig.write('autoupdate = True\n')
 		CreateConfig.close()
 		sys.exit()
 
