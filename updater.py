@@ -10,6 +10,7 @@ def update():
 		config.read('updater.config')
 		gitUrl = config.get('Updater','githubraw')
 		localfile = config.get('Updater','localfile')
+		autoupdate = config.get('Updater','autoupdate')
 	except BaseException as e:
 		print(e)
 		print("generating config file...")
@@ -17,6 +18,7 @@ def update():
 		CreateConfig.write('[Updater]\n')
 		CreateConfig.write('githubraw = \n')
 		CreateConfig.write('localfile = \n')
+		CreateConfig.write('autoupdate = \n')
 		CreateConfig.close()
 		sys.exit()
 
@@ -34,11 +36,19 @@ def update():
 			print(e)
 
 		if LocalCode != GitCode:
-			with open(localfile,'w') as LocalNew:
 				print("Local - Github mismatch!")
-				print("updating...")
-				LocalNew.write(GitCode)
-				sys.exit()
+				if autoupdate == "True":
+					print('autoupdate enabled')
+					print("updating...")
+					localNew = open(localfile,'w')
+					#LocalNew.write(GitCode)
+					sys.exit()
+				elif autoupdate == "False":
+					print('autoupdate disabled')
+					print('continueing as usual...')
+				else:
+					print('autoupdate option unrecognizeable, set to '+autoupdate)
+					print('continueing as usual...')
 		elif LocalCode == GitCode:
 			print("up to date!")
 		else:
