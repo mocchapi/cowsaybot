@@ -4,12 +4,14 @@ import csv
 import time
 import subprocess
 import random
-import updater
+from updater import update
 
-$updater.update()
+update()
 
 bot_config = configparser.ConfigParser()
 bot_config.read('bot.secret')
+blacklist = str(bot_config.get('Options','blacklist'))
+
 
 client = discord.Client()
 
@@ -43,7 +45,10 @@ def remove_prefix(text):
 		return text
 
 def filter_text(text):
-	return text.replace("```","").replace('-','').replace('\n','')
+	filtered_text =text.replace("```","").replace('-','').replace('\n','').replace('\\n','')
+	if filtered_text == '' or filtered_text == None:
+		return "No valid input"
+	return filtered_text
 
 def cowsay(message):
 	test = subprocess.Popen(['cowsay',remove_prefix(message)], stdout=subprocess.PIPE)
@@ -57,8 +62,6 @@ def command_cow(message):
 		filtered_text = filter_text(message)
 		cowsay_output = cowsay(filtered_text)
 		if len(cowsay_output) <1999:
-			print(cowsay_output)
-			log_this(True,"said: "+remove_prefix(message.content))
 			return cowsay_output
 		else:
 			return cowsay("Too long")
@@ -86,10 +89,11 @@ async def on_message(message):
 		return
 
 	if message.content.startswith('cow ') or random.randint(1,501) == 1:
-		blacklist = str(bot_config.get('Options','blacklist'))
-
-		await message.channel.send(command_cow(remove_prefix(message.content)))
 		log_this(True,"from: "+message.author.name+"#"+message.author.discriminator+" with message: "+str(message.content))
+		inputstr =remove_prefix(str(message.content))
+		await message.channel.send(command_cow(inputstr))
+		log_this(True,"said: "+command_cow(inputstr))
+
 
 
 
