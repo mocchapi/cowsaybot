@@ -6,7 +6,7 @@ import subprocess
 import random
 import updater
 
-updater.update()
+$updater.update()
 
 bot_config = configparser.ConfigParser()
 bot_config.read('bot.secret')
@@ -80,12 +80,14 @@ async def on_message(message):
 	if message.author == client.user or message.author.bot:
 		return
 
+	if str(message.guild.id) in blacklist:
+		print("guild "+message.guild.name+" in blacklist, leaving guild.")
+		await message.guild.leave()
+		return
+
 	if message.content.startswith('cow ') or random.randint(1,501) == 1:
 		blacklist = str(bot_config.get('Options','blacklist'))
-		if str(message.guild.id) in blacklist:
-			print("guild "+message.guild.name+" in blacklist, leaving guild.")
-			await message.guild.leave()
-			return
+
 		await message.channel.send(command_cow(remove_prefix(message.content)))
 		log_this(True,"from: "+message.author.name+"#"+message.author.discriminator+" with message: "+str(message.content))
 
