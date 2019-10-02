@@ -42,6 +42,32 @@ def remove_prefix(text):
 	else:
 		return text
 
+def filter_text(text):
+	return text.replace("```","").replace('-','').replace('\n','')
+
+def cowsay(message):
+	test = subprocess.Popen(['cowsay',remove_prefix(message)], stdout=subprocess.PIPE)
+	cowsay_output = test.communicate()[0]
+	cowsay_output = str(cowsay_output).replace("\\n",'\n').replace("\\\\","\\")[2:-1]
+	cowsay_output = "```"+cowsay_output+"```"
+	return cowsay_output
+
+def command_cow(message):
+	try:
+		filtered_text = filter_text(message)
+		cowsay_output = cowsay(filtered_text)
+		if len(cowsay_output) <1999:
+			print(cowsay_output)
+			log_this(True,"said: "+remove_prefix(message.content))
+			return cowsay_output
+		else:
+			return cowsay("Too long")
+	except BaseException as e:
+		return cowsay("error: "+str(e))
+
+
+
+
 @client.event
 async def on_ready():
 	print('total guilds:'+str(len(client.guilds)))
@@ -60,21 +86,8 @@ async def on_message(message):
 			print("guild "+message.guild.name+" in blacklist, leaving guild.")
 			await message.guild.leave()
 			return
-
-		if "\\n" in remove_prefix(message.content):
-			print("filtered")
-			message.content = message.content.replace('\\n','')
+		await message.channel.send(command_cow(remove_prefix(message.content)))
 		log_this(True,"from: "+message.author.name+"#"+message.author.discriminator+" with message: "+str(message.content))
-
-		test = subprocess.Popen(['cowsay',remove_prefix(message.content)], stdout=subprocess.PIPE)
-		cowsay_output = test.communicate()[0]
-		cowsay_output = str(cowsay_output).replace("\\n",'\n').replace("\\\\","\\").replace("```","")[2:-1]
-		if len(cowsay_output) <1992:
-			print(cowsay_output)
-			await message.channel.send("```"+cowsay_output+"```")
-			log_this(True,"said: "+remove_prefix(message.content))
-		else:
-			await message.channel.send("too long")
 
 
 
