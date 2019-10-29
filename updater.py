@@ -1,5 +1,4 @@
 import urllib
-import requests
 import configparser
 import sys
 
