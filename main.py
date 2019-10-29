@@ -7,7 +7,7 @@ import random
 import sys
 from updater import update
 
-update()
+#update()
 
 try:
 	bot_config = configparser.ConfigParser()
@@ -39,17 +39,20 @@ def filter_text(text):
 		return "No valid input"
 	return filtered_text
 
-def cowsay(message):
+def cowsay(message, username=None):
 	test = subprocess.Popen(['cowsay',remove_prefix(message)], stdout=subprocess.PIPE)
 	cowsay_output = test.communicate()[0]
 	cowsay_output = str(cowsay_output).replace("\\n",'\n').replace("\\\\","\\")[2:-1]
-	cowsay_output = "```%s says:\n%s```" % (message.author.nick, cowsay_output)
+	if username == None:
+		cowsay_output = "```%s```" % (cowsay_output)
+	else:
+		cowsay_output = "```%s says:\n%s```" % (username, cowsay_output)
 	return cowsay_output
 
-def command_cow(message):
+def command_cow(message, username=None):
 	try:
 		filtered_text = filter_text(message)
-		cowsay_output = cowsay(filtered_text)
+		cowsay_output = cowsay(filtered_text, username=username)
 		if len(cowsay_output) <1999:
 			return cowsay_output
 		else:
@@ -84,7 +87,7 @@ async def on_message(message):
 			await message.delete()
 		except BaseException as e:
 			print(e)
-		await message.channel.send(command_cow(inputstr))
+		await message.channel.send(command_cow(inputstr, username=message.author.nick))
 		log_this(True,"said: "+command_cow(inputstr))
 
 
