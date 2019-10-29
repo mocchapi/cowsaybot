@@ -72,6 +72,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+	ascii_msg_content = message.content.encode('ascii', 'ignore').decode('ascii')
 	if message.author == client.user or message.author.bot:
 		return
 
@@ -80,14 +81,18 @@ async def on_message(message):
 		await message.guild.leave()
 		return
 
-	if message.content.startswith('cow ') or random.randint(1,501) == 1:
-		log_this(True,"from: "+message.author.name+"#"+message.author.discriminator+" with message: "+str(message.content))
-		inputstr =remove_prefix(str(message.content))
+	if ascii_msg_content.startswith('cow ') or random.randint(1,501) == 1:
+		log_this(True,"from: "+message.author.name+"#"+message.author.discriminator+" with message: "+str(ascii_msg_content))
+		inputstr =remove_prefix(str(ascii_msg_content))
 		try:
 			await message.delete()
 		except BaseException as e:
 			print(e)
-		await message.channel.send(command_cow(inputstr, username=message.author.nick))
+		if message.author.nick == None:
+			user_nick = message.author.name
+		else:
+			user_nick = message.author.nick
+		await message.channel.send(command_cow(inputstr, username=user_nick))
 		log_this(True,"said: "+command_cow(inputstr))
 
 
