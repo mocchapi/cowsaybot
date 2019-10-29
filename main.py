@@ -19,21 +19,6 @@ except BaseException as e:
 
 client = discord.Client()
 
-def report_this(success,note):
-	with open('log.csv', 'a', newline='') as logcache:
-		#time shenanigans
-		date = time.strftime("%d/%m/%Y") + ' ' + time.strftime("%H:%M:%S")
-		wr = csv.writer(logcache, delimiter=',')
-		#check if its an error or not (False = error)
-		if success == True:
-			succeeded = "[ OK ]"
-		elif success == False:
-			succeeded = "[EROR]"
-		#prints & logs the things
-		print('<REPORT> [',date,']',succeeded,str(note))
-		wr.writerow([date, succeeded,note])
-	logcache.close()
-
 def log_this(success,note):
 	date = time.strftime("%d/%m/%Y") + ' ' + time.strftime("%H:%M:%S")
 	if success == True:
@@ -58,7 +43,7 @@ def cowsay(message):
 	test = subprocess.Popen(['cowsay',remove_prefix(message)], stdout=subprocess.PIPE)
 	cowsay_output = test.communicate()[0]
 	cowsay_output = str(cowsay_output).replace("\\n",'\n').replace("\\\\","\\")[2:-1]
-	cowsay_output = "```"+cowsay_output+"```"
+	cowsay_output = "```%s says:\n%s```" % (message.author.nick, cowsay_output)
 	return cowsay_output
 
 def command_cow(message):
@@ -106,4 +91,4 @@ async def on_message(message):
 try:
 	client.run(bot_config.get('Tokens','bot'))
 except BaseException as e:
-	report_this(False,e)
+	print("[!!!] FATAL ERROR: %s" % e)
