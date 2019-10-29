@@ -7,7 +7,7 @@ import random
 import sys
 from updater import update
 
-#update()
+update()
 
 try:
 	bot_config = configparser.ConfigParser()
