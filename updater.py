@@ -3,7 +3,7 @@ import configparser
 import sys
 
 
-def update(manualupdate):
+def update(manualupdate=False):
 	try:
 		config = configparser.ConfigParser()
 		config.read('updater.config')
@@ -57,4 +57,4 @@ def update(manualupdate):
 
 if __name__ == "__main__":
 	print('starting manual update')
-	update(True)
+	update(manualupdate=True)
